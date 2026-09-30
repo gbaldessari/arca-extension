@@ -177,6 +177,43 @@ button.done {
   color: var(--success);
 }
 
+.gate {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gate input {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--field);
+  color: inherit;
+  font: inherit;
+}
+
+.gate .error {
+  margin: 0;
+  color: #ffb4b4;
+  font-size: 12px;
+}
+
+@media (prefers-color-scheme: light) {
+  .gate .error {
+    color: #b4182c;
+  }
+}
+
+.gate .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gate .row button {
+  flex: 1;
+}
+
 .generator {
   display: flex;
   flex-direction: column;

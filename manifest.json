@@ -21,6 +21,7 @@
   "background": {
     "service_worker": "background.js",
     "scripts": [
+      "i18n.js",
       "background.js"
     ]
   },
@@ -33,6 +34,7 @@
       ],
       "js": [
         "icons.js",
+        "i18n.js",
         "content.js"
       ],
       "run_at": "document_idle"

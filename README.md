@@ -1,49 +1,28 @@
-<p align="center">
-  <img src="icons/128x128.png" width="96" alt="Logo de Arca">
-</p>
+# Arca para el navegador
 
-<h1 align="center">Arca para el navegador</h1>
+[English](README.en.md)
 
-<p align="center">
-  Rellena, sugiere y guarda contraseñas con la app de escritorio.<br>
-  Chrome, Edge y Firefox. Sin servidor: habla con Arca en tu equipo.
-</p>
+![Logo de Arca](icons/128x128.png)
 
-<p align="center">
-  <img alt="Licencia GPL v3" src="https://img.shields.io/badge/licencia-GPL_v3-7C5CFF">
-  <img alt="Chrome" src="https://img.shields.io/badge/Chrome-compatible-4285F4">
-  <img alt="Edge" src="https://img.shields.io/badge/Edge-compatible-0078D4">
-  <img alt="Firefox" src="https://img.shields.io/badge/Firefox-128+-FF7139">
-</p>
+Rellena, sugiere y guarda contraseñas con la app de escritorio.
+Chrome, Edge y Firefox. Sin servidor: habla con Arca en tu equipo.
 
-<p align="center">
-  <a href="https://github.com/gbaldessari/arca-app"><strong>← La app de escritorio</strong></a>
-</p>
+![Licencia GPL v3](https://img.shields.io/badge/licencia-GPL_v3-7C5CFF)
+![Chrome](https://img.shields.io/badge/Chrome-compatible-4285F4)
+![Edge](https://img.shields.io/badge/Edge-compatible-0078D4)
+![Firefox](https://img.shields.io/badge/Firefox-128+-FF7139)
 
-<br>
+[La app de escritorio](https://github.com/gbaldessari/arca-app)
 
 ## Qué hace
 
-<table>
-  <tr>
-    <td width="33%" valign="top">
-      <h3>Rellena</h3>
-      En un formulario de acceso ofrece las entradas de Arca para ese sitio.
-    </td>
-    <td width="33%" valign="top">
-      <h3>Sugiere</h3>
-      En un alta propone una contraseña generada por la app y la repite en la confirmación.
-    </td>
-    <td width="33%" valign="top">
-      <h3>Guarda</h3>
-      Después de enviar un formulario, pregunta si la contraseña nueva entra a la bóveda.
-    </td>
-  </tr>
-</table>
+| Rellena | Sugiere | Guarda |
+| --- | --- | --- |
+| En un formulario de acceso ofrece las entradas de Arca para ese sitio. | En un alta propone una contraseña generada por la app y la repite en la confirmación. | Después de enviar un formulario, pregunta si la contraseña nueva entra a la bóveda. |
 
 El popup lista las entradas del sitio abierto, rellena la pestaña, copia una contraseña y genera otra. Copiar pasa por la app: queda fuera del historial de Windows y se borra a los 30 segundos.
 
-La extensión no descifra nada y no guarda la bóveda. Si Arca está cerrada, bloqueada o con la integración desactivada, no hay contraseñas que mostrar.
+La extensión no descifra nada y no guarda la bóveda. Si Arca está cerrada o bloqueada, el menú de la página y el popup pueden abrirla y desbloquearla con la contraseña maestra o con Windows Hello. Los textos siguen el idioma del navegador.
 
 ## Cómo se conecta
 
@@ -93,4 +72,4 @@ No pide el historial ni el contenido de todas las pestañas. El script de conten
 
 Software libre bajo la [GNU GPL v3](LICENSE), solo la versión 3, igual que la app. Se puede usar, estudiar, modificar y compartir. Quien distribuya una versión modificada tiene que publicar el código bajo la misma licencia.
 
-Copyright (C) 2026 Giacomo Baldessari.
+Copyright © 2026 Giacomo Baldessari.

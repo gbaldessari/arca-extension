@@ -4,7 +4,7 @@
 (() => {
   const api = globalThis.browser ?? globalThis.chrome;
   const ask = (message) =>
-    api.runtime.sendMessage(message).catch(() => ({ error: "La extensión se actualizó: recarga la página." }));
+    api.runtime.sendMessage(message).catch(() => ({ error: arcaT("reloadPage") }));
 
   const STYLE = `
     :host { all: initial; }
@@ -40,6 +40,13 @@
     }
     .actions button.primary { background: #2f6feb; border-color: #2f6feb; color: #fff; }
     .actions button:focus-visible { outline: 2px solid #7aa7ff; outline-offset: 2px; }
+    .gate { display: grid; gap: 8px; padding: 2px 6px 8px; }
+    .gate input {
+      all: unset; box-sizing: border-box; width: 100%; padding: 8px 10px;
+      border: 1px solid #2b3445; border-radius: 8px; background: #1a202b;
+    }
+    .gate .actions button { flex: 1; text-align: center; }
+    .gate .error { margin: 0; color: #ffb4b4; font-size: 12px; }
     @keyframes arca-in { from { opacity: 0; transform: translateY(-4px); } }
     @media (prefers-color-scheme: light) {
       .menu, .banner { color: #141a24; background: #fff; border-color: #dce1ea; box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16); }
@@ -48,6 +55,8 @@
       .item svg { color: #2559c9; }
       .actions button { background: #fff; border-color: #dce1ea; }
       .banner .error { color: #b4182c; }
+      .gate input { border-color: #dce1ea; background: #fff; }
+      .gate .error { color: #b4182c; }
     }
     @media (prefers-reduced-motion: reduce) { .menu, .banner { animation: none; } }
   `;
@@ -115,6 +124,13 @@
   // Menu under the focused login field
 
   let anchor = null;
+  let helloInFlight = false;
+
+  async function prefersHello(closed) {
+    if (closed) return !!(await ask({ type: "hello_default" })).enabled;
+    const status = await ask({ type: "hello_status" });
+    return !!(status.available && status.enabled);
+  }
 
   function place() {
     if (!anchor || menu.hidden) return;
@@ -150,23 +166,94 @@
     place();
   }
 
+  async function showGate(field, state) {
+    const closed = state === "cerrada";
+    const preferred = await prefersHello(closed);
+    if (anchor !== field) return;
+    const password = element("input");
+    password.type = "password";
+    password.placeholder = arcaT("masterPassword");
+    password.setAttribute("aria-label", arcaT("masterPassword"));
+    password.autocomplete = "current-password";
+    const error = element("p", "error");
+    error.hidden = true;
+    const submit = element("button", preferred ? "" : "primary", arcaT(closed ? "openWithPassword" : "usePassword"));
+    submit.type = "submit";
+    const hello = element("button", preferred ? "primary" : "", "Windows Hello");
+    hello.type = "button";
+    const actions = element("div", "actions");
+    actions.append(...(preferred ? [hello, submit] : [submit, hello]));
+    if (closed) {
+      const open = element("button", "", arcaT("onlyOpen"));
+      open.type = "button";
+      open.addEventListener("click", async (e) => {
+        if (!e.isTrusted) return;
+        open.disabled = true;
+        const result = await ask({ type: "open" });
+        open.disabled = false;
+        if (result.error) {
+          error.hidden = false;
+          error.textContent = result.error;
+        }
+      });
+      actions.append(open);
+    }
+    const form = element("form", "gate");
+    form.append(password, error, actions);
+    const finish = (result) => {
+      password.value = "";
+      submit.disabled = false;
+      hello.disabled = false;
+      if (result.error) {
+        error.hidden = false;
+        error.textContent = result.error;
+        return;
+      }
+      openMenu(field);
+    };
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!e.isTrusted || !password.value) return;
+      submit.disabled = true;
+      finish(await ask({ type: "unlock", password: password.value }));
+    });
+    hello.addEventListener("click", async (e) => {
+      if (!e.isTrusted) return;
+      hello.disabled = true;
+      error.hidden = false;
+      error.textContent = arcaT("waitingHello");
+      finish(await ask({ type: "unlock_hello" }));
+    });
+    const note = element("p", "note", arcaT(closed ? "closed" : "locked"));
+    note.prepend(arcaIcon(closed ? "alert" : "lock"));
+    menu.replaceChildren(brand(), note, form);
+    menu.hidden = false;
+    place();
+    if (!preferred) return password.focus();
+    if (helloInFlight) return;
+    helloInFlight = true;
+    hello.disabled = true;
+    error.hidden = false;
+    error.textContent = arcaT("waitingHello");
+    const result = await ask({ type: "unlock_hello" });
+    helloInFlight = false;
+    if (anchor === field) finish(result);
+  }
+
   async function openMenu(field) {
     anchor = field;
-    showItems([{ note: "Buscando en Arca…" }]);
+    showItems([{ note: arcaT("searching") }]);
     const response = await ask({ type: "logins" });
     if (anchor !== field) return;
+    if (response.error || response.locked) return showGate(field, response.locked ? "bloqueada" : "cerrada");
     const items = [];
     if (wantsNewPassword(field)) {
-      items.push({ icon: "wand", title: "Usar una contraseña segura", detail: "Generada por Arca", run: () => suggest(field) });
+      items.push({ icon: "wand", title: arcaT("useSecure"), detail: arcaT("generatedBy"), run: () => suggest(field) });
     }
-    if (response.error) items.push({ icon: "alert", note: response.error });
-    else if (response.locked) items.push({ icon: "lock", note: "Desbloquea Arca para ver tus contraseñas" });
-    else {
-      for (const login of response.logins) {
-        items.push({ icon: "key", title: login.title, detail: login.username || "Sin usuario", run: () => pick(field, login.id) });
-      }
-      if (!items.length) items.push({ note: "Arca no tiene contraseñas para este sitio" });
+    for (const login of response.logins) {
+      items.push({ icon: "key", title: login.title, detail: login.username || arcaT("noUsername"), run: () => pick(field, login.id) });
     }
+    if (!response.logins.length) items.push({ note: arcaT("noLogins") });
     showItems(items);
   }
 
@@ -222,7 +309,11 @@
     buttons[(next + buttons.length) % buttons.length]?.focus();
   });
   // Keeps focus in the page's field while the menu is clicked.
-  menu.addEventListener("mousedown", (e) => e.preventDefault());
+  // Keeps the page field focused while the menu is used, except when typing the master password.
+  menu.addEventListener("mousedown", (e) => {
+    if (e.target instanceof Element && e.target.closest("input")) return;
+    e.preventDefault();
+  });
   addEventListener("scroll", place, true);
   addEventListener("resize", place);
 
@@ -260,10 +351,11 @@
     const pending = await ask({ type: "pending" });
     if (!pending?.status || !banner.hidden) return;
     const update = pending.status === "update";
-    const who = pending.username ? ` de ${pending.username}` : "";
-    const question = update ? `¿Actualizar la contraseña guardada${who}?` : `¿Guardar la contraseña${who} en Arca?`;
-    const later = element("button", "", "Ahora no");
-    const save = element("button", "primary", update ? "Actualizar" : "Guardar");
+    const question = update
+      ? pending.username ? arcaT("updateFor", pending.username) : arcaT("updateSaved")
+      : pending.username ? arcaT("saveFor", pending.username) : arcaT("saveNew");
+    const later = element("button", "", arcaT("notNow"));
+    const save = element("button", "primary", arcaT(update ? "update" : "save"));
     const actions = element("div", "actions");
     actions.append(later, save);
     banner.replaceChildren(brand(), element("p", "", question), actions);
@@ -277,7 +369,7 @@
     save.addEventListener("click", async (e) => {
       if (!e.isTrusted) return;
       const result = await ask({ type: "save" });
-      banner.replaceChildren(brand(), element("p", result.error ? "error" : "", result.error ?? "Guardada en Arca"));
+      banner.replaceChildren(brand(), element("p", result.error ? "error" : "", result.error ?? arcaT("savedInArca")));
       setTimeout(() => (banner.hidden = true), 2500);
     });
   }

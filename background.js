@@ -1,13 +1,18 @@
 // Relays requests from the content script and the popup to the Arca app over native messaging.
+try {
+  importScripts("i18n.js");
+} catch {
+  // Firefox loads i18n.js from the background scripts list.
+}
 const api = globalThis.browser ?? globalThis.chrome;
 const HOST = "com.arca.vault";
 const PENDING_TTL = 3 * 60 * 1000;
 
 async function native(message) {
   try {
-    return await api.runtime.sendNativeMessage(HOST, message);
+    return await api.runtime.sendNativeMessage(HOST, { ...message, lang: ARCA_LANG });
   } catch {
-    return { error: "No se pudo conectar con Arca. Ábrela y activa la integración con el navegador en Ajustes." };
+    return { error: arcaT("connectFailed") };
   }
 }
 
@@ -44,6 +49,19 @@ async function handle(message, sender) {
       return native({ type: message.type, url, id: message.id });
     case "generate":
       return native({ type: "generate" });
+    case "open":
+      return native({ type: "open" });
+    case "unlock":
+      return native({ type: "unlock", password: message.password });
+    case "unlock_hello":
+      return native({ type: "unlock_hello" });
+    case "hello_status": {
+      const status = await native({ type: "hello_status" });
+      if (!status.error) await api.storage.local.set({ helloDefault: !!(status.available && status.enabled) });
+      return status;
+    }
+    case "hello_default":
+      return { enabled: !!(await api.storage.local.get("helloDefault")).helloDefault };
     case "copy_text":
       return native({ type: "copy_text", text: message.text });
     case "fillTab": {
@@ -77,7 +95,7 @@ async function handle(message, sender) {
     }
     case "save": {
       const pending = await takePending(tabId);
-      if (!pending) return { error: "No hay nada para guardar" };
+      if (!pending) return { error: arcaT("nothingToSave") };
       const { username, password } = pending;
       return native({ type: "save", url: pending.url, username, password });
     }
@@ -85,7 +103,7 @@ async function handle(message, sender) {
       await takePending(tabId);
       return null;
   }
-  return { error: "Solicitud desconocida" };
+  return { error: arcaT("unknownRequest") };
 }
 
 api.runtime.onMessage.addListener((message, sender, sendResponse) => {

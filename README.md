@@ -2,7 +2,7 @@
 
 Extensión que rellena, sugiere y guarda contraseñas usando la app de escritorio [Arca](https://github.com/gbaldessari/arca-app). Funciona en Chrome, Edge y Firefox. No tiene servidor: habla con la app de este equipo y solo mientras esa app está abierta.
 
-Este repositorio se publica para que el código se pueda leer y auditar. Todavía no hay una licencia de uso elegida. Publicarlo permite revisarlo; no autoriza por sí solo a reutilizarlo.
+Este repositorio se publica para que el código se pueda leer y auditar. La extensión es software libre bajo la [GNU GPL v3](LICENSE), solo la versión 3, igual que la app. Se puede usar, estudiar, modificar y compartir. Quien distribuya una versión modificada tiene que publicar el código fuente bajo la misma licencia. Copyright (C) 2026 Giacomo Baldessari.
 
 ## Qué hace
 

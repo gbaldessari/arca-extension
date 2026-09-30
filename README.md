@@ -1,78 +1,96 @@
-# Arca para el navegador
+<p align="center">
+  <img src="icons/128x128.png" width="96" alt="Logo de Arca">
+</p>
 
-Extensión que rellena, sugiere y guarda contraseñas usando la app de escritorio [Arca](https://github.com/gbaldessari/arca-app). Funciona en Chrome, Edge y Firefox. No tiene servidor: habla con la app de este equipo y solo mientras esa app está abierta.
+<h1 align="center">Arca para el navegador</h1>
 
-Este repositorio se publica para que el código se pueda leer y auditar. La extensión es software libre bajo la [GNU GPL v3](LICENSE), solo la versión 3, igual que la app. Se puede usar, estudiar, modificar y compartir. Quien distribuya una versión modificada tiene que publicar el código fuente bajo la misma licencia. Copyright (C) 2026 Giacomo Baldessari.
+<p align="center">
+  Rellena, sugiere y guarda contraseñas con la app de escritorio.<br>
+  Chrome, Edge y Firefox. Sin servidor: habla con Arca en tu equipo.
+</p>
+
+<p align="center">
+  <img alt="Licencia GPL v3" src="https://img.shields.io/badge/licencia-GPL_v3-7C5CFF">
+  <img alt="Chrome" src="https://img.shields.io/badge/Chrome-compatible-4285F4">
+  <img alt="Edge" src="https://img.shields.io/badge/Edge-compatible-0078D4">
+  <img alt="Firefox" src="https://img.shields.io/badge/Firefox-128+-FF7139">
+</p>
+
+<p align="center">
+  <a href="https://github.com/gbaldessari/arca-app"><strong>← La app de escritorio</strong></a>
+</p>
+
+<br>
 
 ## Qué hace
 
-En un formulario de acceso ofrece las entradas de Arca para ese sitio. En un formulario de alta puede proponer una contraseña generada por la app y repetirla en el campo de confirmación. Después de enviar un formulario nuevo, o de cambiar una contraseña que ya estaba guardada, pregunta si se guarda en la bóveda.
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <h3>Rellena</h3>
+      En un formulario de acceso ofrece las entradas de Arca para ese sitio.
+    </td>
+    <td width="33%" valign="top">
+      <h3>Sugiere</h3>
+      En un alta propone una contraseña generada por la app y la repite en la confirmación.
+    </td>
+    <td width="33%" valign="top">
+      <h3>Guarda</h3>
+      Después de enviar un formulario, pregunta si la contraseña nueva entra a la bóveda.
+    </td>
+  </tr>
+</table>
 
-El popup de la extensión lista las entradas del sitio abierto, rellena la pestaña, copia una contraseña y genera una contraseña segura. Copiar usa el portapapeles de la app: queda fuera del historial de Windows y se borra a los 30 segundos.
+El popup lista las entradas del sitio abierto, rellena la pestaña, copia una contraseña y genera otra. Copiar pasa por la app: queda fuera del historial de Windows y se borra a los 30 segundos.
 
 La extensión no descifra nada y no guarda la bóveda. Si Arca está cerrada, bloqueada o con la integración desactivada, no hay contraseñas que mostrar.
 
 ## Cómo se conecta
 
+```mermaid
+flowchart LR
+  Pagina[Página] --> Content[content.js]
+  Content --> Fondo[background.js]
+  Fondo --> Host[arca.exe]
+  Host --> App[App de Arca]
 ```
-página  →  content.js  →  background.js  →  native messaging  →  arca.exe
-                                                                      │
-                                                               127.0.0.1 (cifrado)
-                                                                      │
-                                                                 app de Arca
-```
 
-`content.js` corre en páginas `https` y en `http://localhost` y `http://127.0.0.1`. Detecta campos de usuario y contraseña, pero no lee otras contraseñas de la página hasta que la persona envía el formulario o pide rellenar.
+`content.js` corre en páginas `https` y en `http://localhost` y `http://127.0.0.1`. Reconoce los campos de usuario y contraseña. No lee el resto de la página hasta que enviás el formulario o pedís rellenar.
 
-`background.js` es el service worker en Chrome y Edge, y el script de fondo en Firefox. Es el único que puede usar native messaging. La página no le escribe directo: el content script manda el mensaje y el fondo descarta cualquiera que no venga de esta misma extensión.
+`background.js` es el único que habla con la app, por native messaging. Descarta cualquier mensaje que no venga de esta extensión. El host se llama `com.arca.vault`: la app lo registra al activar la integración y lo borra al desactivarla. El `arca.exe` que arranca el navegador no abre la ventana. Reenvía el mensaje a la app que ya está corriendo, por un puerto local cuya clave cambia en cada arranque.
 
-El host se llama `com.arca.vault`. La app lo registra en el registro del usuario al activar la integración, para Chrome, Edge y Firefox, y lo borra al desactivarla. El ejecutable que arranca el navegador no abre la ventana: solo reenvía el mensaje a la app que ya está corriendo, por un puerto local cuyo número y clave cambian en cada arranque. El detalle del cifrado y de qué puede pedir cada sitio está en el README de la app, en `src-tauri/src/bridge.rs`.
+La URL la informa el navegador, no la página. Un sitio no puede pedir las contraseñas de otro cambiando el mensaje.
 
-## Qué puede pedir
-
-| Mensaje | Cuándo | Qué devuelve la app |
+| Mensaje | Cuándo | Qué responde Arca |
 | --- | --- | --- |
 | `logins` | Al enfocar un campo de acceso | Título y usuario de ese sitio, sin contraseñas |
-| `fill` | Al elegir una entrada | Usuario y contraseña, solo si la entrada es de ese sitio |
-| `generate` | Al pedir una contraseña segura | 20 caracteres, con el generador de la app |
+| `fill` | Al elegir una entrada | Usuario y contraseña, si la entrada es de ese sitio |
+| `generate` | Al pedir una contraseña segura | 20 caracteres, generados por la app |
 | `captured` y `save` | Tras enviar un formulario | Nada, una entrada nueva o una actualización |
 | `copy` | Desde el popup | La app copia la contraseña y no la devuelve |
 
-La URL la pone el navegador (`sender.url` o la pestaña activa), no la página. Una página no puede pedir las contraseñas de otro sitio cambiando el mensaje.
+El menú y el aviso de guardar viven en un shadow DOM cerrado. La página no puede leerlos. Esos controles solo responden a clics y teclas reales del navegador. El estilo sigue el modo claro u oscuro del sistema.
 
-## Cómo está hecha la interfaz
+## Instalar
 
-El menú y el aviso de guardar viven en un shadow DOM cerrado, dentro de un elemento `arca-helper`. La página no puede leerlo ni recorrerlo. Esos controles solo reaccionan a clics y teclas marcados como reales por el navegador (`isTrusted`). Los iconos se dibujan con el DOM, sin `innerHTML`, para no depender de la política de contenido de la página.
+1. Abrí Arca, desbloqueá la bóveda y activá **Integración con el navegador** en Ajustes.
+2. En Chrome o Edge, entrá a `chrome://extensions` o `edge://extensions`, activá el modo desarrollador y cargá esta carpeta.
+3. En Firefox 128 o posterior, entrá a `about:debugging#/runtime/this-firefox` y cargá `manifest.json` como complemento temporal.
 
-El estilo sigue el modo claro u oscuro del sistema. El popup está en `popup.html`, `popup.css` y `popup.js`.
-
-## Instalarla para probarla
-
-1. Instala y abre la app de Arca, desbloquea la bóveda y activa **Integración con el navegador** en Ajustes.
-2. Chrome o Edge: `chrome://extensions` o `edge://extensions`, activa el modo desarrollador y elige **Cargar descomprimida** sobre esta carpeta.
-3. Firefox 128 o posterior: `about:debugging#/runtime/this-firefox` y elige **Cargar complemento temporal** sobre `manifest.json`.
-
-El campo `key` del manifiesto es la clave pública que fija el identificador de Chrome y Edge en `jnjphfockignkgdhnlpmobbcgchmbeab`. La app solo acepta ese origen, y en Firefox solo el id `arca@arca.vault`. Si se quita `key`, el navegador calcula otro id y native messaging deja de coincidir. La clave privada de ese par no está en este repositorio.
-
-Hace falta la app de esta misma versión del protocolo. La extensión no funciona sola.
+El campo `key` del manifiesto es la clave pública que fija el identificador de Chrome y Edge. La app solo acepta ese origen, y en Firefox solo el id `arca@arca.vault`. Sin la app de esta versión, la extensión no tiene con quién hablar.
 
 ## Permisos
 
-- `nativeMessaging`: hablar con el host `com.arca.vault`.
-- `storage`: guardar en memoria de la sesión, durante unos minutos, el usuario y la contraseña que se acaban de enviar, hasta que la persona confirme si se guardan. Se borra al cerrar la pestaña o al responder.
-- `activeTab`: el popup necesita la URL de la pestaña actual.
+| Permiso | Para qué |
+| --- | --- |
+| `nativeMessaging` | Hablar con el host `com.arca.vault`. |
+| `storage` | Recordar, solo en memoria y por unos minutos, lo que acabás de enviar, hasta que confirmes si se guarda. |
+| `activeTab` | Conocer la URL de la pestaña actual en el popup. |
 
-No pide permiso para leer el historial, las pestañas en segundo plano ni el contenido de todas las páginas. El content script sí está declarado para todo `https`, porque no hay forma de saber de antemano en qué sitio hay un formulario.
+No pide el historial ni el contenido de todas las pestañas. El script de contenido está declarado para todo `https` porque no se puede saber de antemano dónde hay un formulario.
 
-## Para auditar
+## Licencia
 
-Conviene leer en este orden: `manifest.json`, `background.js`, `content.js` y, en la app, `src-tauri/src/bridge.rs` y `bridge_request` en `src-tauri/src/lib.rs`.
+Software libre bajo la [GNU GPL v3](LICENSE), solo la versión 3, igual que la app. Se puede usar, estudiar, modificar y compartir. Quien distribuya una versión modificada tiene que publicar el código bajo la misma licencia.
 
-Límites del diseño:
-
-- Cuando la persona elige una contraseña, el content script la escribe en el input. Desde ese momento el JavaScript de la página puede leerla. Es el mismo límite de cualquier autocompletado.
-- Con la integración activa, un programa del mismo usuario de Windows puede hablar con el puerto local de la app. El navegador solo impide que otra extensión use el host.
-- `generate` y copiar texto no exigen la bóveda desbloqueada. No leen entradas.
-- La coincidencia de sitios trata los subdominios como el mismo sitio y no usa la lista de sufijos públicos. El README de la app describe la regla exacta.
-- El aviso de guardar recuerda la contraseña recién enviada en `storage.session` hasta tres minutos. No se escribe en disco.
-- No hay tienda ni paquete firmado. Cargarla en modo desarrollador es la forma prevista de probarla.
+Copyright (C) 2026 Giacomo Baldessari.

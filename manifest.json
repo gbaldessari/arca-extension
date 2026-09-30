@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Arca",
+  "version": "0.1.0",
+  "description": "Rellena, sugiere y guarda contraseñas con tu bóveda local de Arca.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApiDwgX7C5ux/t/vyx+nLR8Sctdkx/GHLNHYdfQMKHdkvp9ix2Pu87Vh/T/D36A0kgy9C2PD2iE7A4ew89wDh4RJbzFl6sh2Ca+UqGSQaiY2nqRnn5TGFuNcRE5BPq8NwL3adejZYkRog1GjQO1IhPrbPXaPv1unj8OGtQyXgAMC4Bx6W6RXAmXs2HjcKdou9L5B0dTbBMP0Eu2EzooC5+ZeQRvvKBX2wjZwuggZYV+8ND3YnvOgRKRcdK8otLVRPryxTMbHYcnLrsZQRGbiKQhwP70141A7OF5qStnxHSmIgLVlSbWS3Fmf4wGzs4oZXLfED8F6GyzGMKokYQHoWrQIDAQAB",
+  "icons": {
+    "16": "icons/16x16.png",
+    "32": "icons/32x32.png",
+    "48": "icons/48x48.png",
+    "128": "icons/128x128.png"
+  },
+  "action": {
+    "default_title": "Arca",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16x16.png",
+      "32": "icons/32x32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*/*",
+        "http://localhost/*",
+        "http://127.0.0.1/*"
+      ],
+      "js": [
+        "icons.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": [
+    "nativeMessaging",
+    "storage",
+    "activeTab"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "arca@arca.vault",
+      "strict_min_version": "128.0"
+    }
+  }
+}

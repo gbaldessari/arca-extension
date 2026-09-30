@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Arca</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="icons/32x32.png" alt="" />
+      <div>
+        <strong>Arca</strong>
+        <span id="site"></span>
+      </div>
+    </header>
+    <main id="logins">
+      <p class="note">Conectando con Arca…</p>
+    </main>
+    <section class="generator" aria-label="Contraseña segura">
+      <p class="label">Contraseña segura</p>
+      <div class="generated">
+        <code id="password"></code>
+        <button id="regenerate" class="icon" title="Generar otra" aria-label="Generar otra"></button>
+        <button id="copy-generated" class="icon" title="Copiar" aria-label="Copiar contraseña segura"></button>
+      </div>
+    </section>
+    <script src="icons.js"></script>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f131b;
+  --panel: #141922;
+  --field: #1a202b;
+  --hover: #202838;
+  --border: #252d3a;
+  --text: #e8ecf3;
+  --muted: #8a94a6;
+  --accent: #2f6feb;
+  --accent-text: #7aa7ff;
+  --success: #4cc38a;
+  font: 13px/1.45 "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg: #f4f6fb;
+    --panel: #ffffff;
+    --field: #ffffff;
+    --hover: #eef2f8;
+    --border: #dce1ea;
+    --text: #141a24;
+    --muted: #5b6577;
+    --accent-text: #2559c9;
+    --success: #13925a;
+  }
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 320px;
+  margin: 0;
+  padding: 14px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+header img {
+  width: 28px;
+  height: 28px;
+}
+
+header div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#site,
+.note,
+.label {
+  color: var(--muted);
+}
+
+#site {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+p {
+  margin: 0;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.note svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--accent-text);
+}
+
+.login {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  animation: fade-up 0.2s both;
+}
+
+.login .text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.login .text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.login .text span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--field);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    transform 0.1s;
+}
+
+button:hover {
+  background: var(--hover);
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
+}
+
+button.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+button.icon {
+  padding: 6px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+button.icon:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+button.done {
+  color: var(--success);
+}
+
+.generator {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.generated {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 4px 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.generated code {
+  flex: 1;
+  min-width: 0;
+  font: 14px "Cascadia Mono", Consolas, monospace;
+  word-break: break-all;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

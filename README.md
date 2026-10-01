@@ -58,6 +58,8 @@ The menu and the save prompt live in a closed shadow DOM. The page cannot read t
 
 The `key` field in the manifest is the public key that pins the Chrome and Edge identifier. The app only accepts that origin, and on Firefox only the id `arca@arca.vault`. Without the app from this version, the extension has nobody to talk to.
 
+The Edge Add-ons package is [store/Arca.zip](store/Arca.zip), built with `pack-edge.ps1`. The store rejects `key` and `background.scripts`, so that zip leaves them out. Loading this folder for development still uses both.
+
 ## Permissions
 
 | Permission | What it is for |

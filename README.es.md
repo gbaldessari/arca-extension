@@ -58,6 +58,8 @@ El menú y el aviso de guardar viven en un shadow DOM cerrado. La página no pue
 
 El campo `key` del manifiesto es la clave pública que fija el identificador de Chrome y Edge. La app solo acepta ese origen, y en Firefox solo el id `arca@arca.vault`. Sin la app de esta versión, la extensión no tiene con quién hablar.
 
+El paquete de Edge Add-ons es [store/Arca.zip](store/Arca.zip), armado con `pack-edge.ps1`. La tienda rechaza `key` y `background.scripts`, así que ese zip los omite. Cargar esta carpeta para desarrollo sigue usando ambos.
+
 ## Permisos
 
 | Permiso | Para qué |

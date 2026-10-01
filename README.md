@@ -63,10 +63,14 @@ The `key` field in the manifest is the public key that pins the Chrome and Edge 
 | Permission | What it is for |
 | --- | --- |
 | `nativeMessaging` | Talk to the `com.arca.vault` host. |
-| `storage` | Remember, only in memory and for a few minutes, what you just submitted, until you confirm whether to save it. |
+| `storage` | Hold a username and password in memory for up to 3 minutes, until you save or dismiss, and remember whether Windows Hello is the default unlock. |
 | `activeTab` | Know the current tab's URL in the popup. |
 
 It does not ask for history or the contents of every tab. The content script is declared for all of `https` because there is no way to know in advance where a form will be.
+
+## Privacy
+
+[Privacy policy](PRIVACY.md). Usernames and passwords stay on this computer. The Edge Add-ons listing links to that page.
 
 ## License
 

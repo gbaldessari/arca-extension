@@ -35,6 +35,7 @@ const ARCA_DICTS = {
     regenerate: "Generar otra",
     copy: "Copiar",
     copyGenerated: "Copiar contraseña segura",
+    privacy: "Privacidad",
   },
   en: {
     connectFailed: "Could not connect to Arca. Open it and turn on browser integration in Settings.",
@@ -70,6 +71,7 @@ const ARCA_DICTS = {
     regenerate: "Generate another",
     copy: "Copy",
     copyGenerated: "Copy secure password",
+    privacy: "Privacy",
   },
 };
 

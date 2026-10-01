@@ -63,10 +63,14 @@ El campo `key` del manifiesto es la clave pública que fija el identificador de 
 | Permiso | Para qué |
 | --- | --- |
 | `nativeMessaging` | Hablar con el host `com.arca.vault`. |
-| `storage` | Recordar, solo en memoria y por unos minutos, lo que acabás de enviar, hasta que confirmes si se guarda. |
+| `storage` | Guardar un usuario y una contraseña en memoria hasta 3 minutos, hasta que guardes o descartes, y recordar si Windows Hello es el desbloqueo por defecto. |
 | `activeTab` | Conocer la URL de la pestaña actual en el popup. |
 
 No pide el historial ni el contenido de todas las pestañas. El script de contenido está declarado para todo `https` porque no se puede saber de antemano dónde hay un formulario.
+
+## Privacidad
+
+[Política de privacidad](PRIVACY.es.md). Los usuarios y las contraseñas se quedan en esta computadora. La ficha de Edge Add-ons enlaza a esa página.
 
 ## Licencia
 

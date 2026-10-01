@@ -2,6 +2,7 @@ const api = globalThis.browser ?? globalThis.chrome;
 const ask = (message) => api.runtime.sendMessage(message);
 const $ = (id) => document.getElementById(id);
 const [tab] = await api.tabs.query({ active: true, currentWindow: true });
+$("privacy").textContent = arcaT("privacy");
 
 const element = (tag, className = "", text = "") => {
   const node = document.createElement(tag);

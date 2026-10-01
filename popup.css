@@ -214,6 +214,17 @@ button.done {
   flex: 1;
 }
 
+.privacy {
+  align-self: flex-end;
+  color: var(--muted);
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.privacy:hover {
+  color: var(--accent-text);
+}
+
 .generator {
   display: flex;
   flex-direction: column;

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a2458"/>
+      <stop offset="1" stop-color="#2a1468"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.22" cy="0.5" r="0.55">
+      <stop offset="0" stop-color="#6a8cff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#6a8cff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b8cff"/>
+      <stop offset="1" stop-color="#6a3ff2"/>
+    </linearGradient>
+    <radialGradient id="shine" cx="0.22" cy="0.12" r="0.9">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.3"/>
+      <stop offset="0.6" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glyph" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#e2e6ff"/>
+    </linearGradient>
+    <mask id="keyhole">
+      <rect width="1024" height="1024" fill="#fff"/>
+      <circle cx="512" cy="548" r="80" fill="#000"/>
+      <path d="M476 590L424 880H600L548 590Z" fill="#000"/>
+    </mask>
+  </defs>
+  <rect width="440" height="280" fill="url(#tile)"/>
+  <rect width="440" height="280" fill="url(#glow)"/>
+  <svg x="36" y="60" width="160" height="160" viewBox="0 0 1024 1024">
+    <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+    <rect width="1024" height="1024" rx="224" fill="url(#shine)"/>
+    <path d="M512 206L784 796H240Z" fill="url(#glyph)" stroke="url(#glyph)" stroke-width="64" stroke-linejoin="round" mask="url(#keyhole)"/>
+  </svg>
+  <text x="220" y="132" fill="#ffffff" font-family="Segoe UI" font-size="52" font-weight="700">Arca</text>
+  <text x="222" y="168" fill="#d5defa" font-family="Segoe UI" font-size="18">Local password manager</text>
+</svg>

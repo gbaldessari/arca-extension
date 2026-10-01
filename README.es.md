@@ -56,7 +56,7 @@ El menú y el aviso de guardar viven en un shadow DOM cerrado. La página no pue
 2. En Chrome o Edge, entrá a `chrome://extensions` o `edge://extensions`, activá el modo desarrollador y cargá esta carpeta.
 3. En Firefox 128 o posterior, entrá a `about:debugging#/runtime/this-firefox` y cargá `manifest.json` como complemento temporal.
 
-El campo `key` del manifiesto es la clave pública que fija el identificador de Chrome y Edge. La app solo acepta ese origen, y en Firefox solo el id `arca@arca.vault`. Sin la app de esta versión, la extensión no tiene con quién hablar.
+El campo `key` del manifiesto es la clave pública que fija el identificador de Chrome y Edge sin empaquetar. Edge Add-ons usa otro, `peadbjdjjofiieihgijnjhlnmpeihiok`. La app acepta los dos, y en Firefox solo el id `arca@arca.vault`. Sin la app de esta versión, la extensión no tiene con quién hablar.
 
 El paquete de Edge Add-ons es [store/Arca.zip](store/Arca.zip), armado con `pack-edge.ps1`. La tienda rechaza `key` y `background.scripts`, así que ese zip los omite. Cargar esta carpeta para desarrollo sigue usando ambos.
 

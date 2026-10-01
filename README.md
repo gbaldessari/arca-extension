@@ -56,7 +56,7 @@ The menu and the save prompt live in a closed shadow DOM. The page cannot read t
 2. In Chrome or Edge, open `chrome://extensions` or `edge://extensions`, turn on developer mode, and load this folder.
 3. In Firefox 128 or later, open `about:debugging#/runtime/this-firefox` and load `manifest.json` as a temporary add-on.
 
-The `key` field in the manifest is the public key that pins the Chrome and Edge identifier. The app only accepts that origin, and on Firefox only the id `arca@arca.vault`. Without the app from this version, the extension has nobody to talk to.
+The `key` field in the manifest is the public key that pins the unpacked Chrome and Edge identifier. Edge Add-ons uses another one, `peadbjdjjofiieihgijnjhlnmpeihiok`. The app accepts both, and on Firefox only the id `arca@arca.vault`. Without the app from this version, the extension has nobody to talk to.
 
 The Edge Add-ons package is [store/Arca.zip](store/Arca.zip), built with `pack-edge.ps1`. The store rejects `key` and `background.scripts`, so that zip leaves them out. Loading this folder for development still uses both.
 
